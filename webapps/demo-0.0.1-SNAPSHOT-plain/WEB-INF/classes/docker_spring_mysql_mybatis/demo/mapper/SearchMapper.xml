@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="docker_spring_mysql_mybatis.demo.mapper.SearchMapper">
+	<!--↓ interfaceで指定した変数名と一致させる。-->
+    <select id="selectAll" resultType="docker_spring_mysql_mybatis.demo.form.SearchForm">
+        SELECT id, name FROM sample.user
+    </select>
+</mapper>

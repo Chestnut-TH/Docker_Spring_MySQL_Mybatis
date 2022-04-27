@@ -1,0 +1,41 @@
+version: "3"
+services:
+    # SQLのサービス
+    db:
+        image: mysql:8.0
+        container_name: "mysql"
+        command: --default-authentication-plugin=mysql_native_password
+        ports:
+        - "3306:3306"
+        volumes:
+        - ./mysql/sql/:/docker-entrypoint-initdb.d
+        - ./mysql/settings/:/var/lib/mysql
+        - ./mysql/sql/mysql.cnf:/etc/mysql/conf.d/my.cnf
+        environment:
+            MYSQL_DATABASE: "sample" # この場合sampleというデータベースが作成されます
+            MYSQL_ROOT_USER: "root" # rootユーザーはパスワードを設定しないとエラーでます
+            MYSQL_ROOT_PASSWORD: "password"
+            TZ: "Asia/Tokyo"
+    # springアプリケーションのサービス
+    # web:
+    #     image: openjdk:8
+    #     container_name: "spring"
+    #     restart: always
+    #     ports:
+    #     - "8080:8080"
+    #     tty: true
+    #     depends_on:
+    #     - db
+    #     - app
+    #     volumes:
+    #     - ./demo:/app:cached
+    #     working_dir: /app
+    app:
+        container_name: tomcat
+        image: tomcat:8.5-jdk8-adoptopenjdk-openj9
+        ports:
+        - 8080:8080
+        depends_on:
+        - db
+        volumes:
+        - ./webapps:/usr/local/tomcat/webapps

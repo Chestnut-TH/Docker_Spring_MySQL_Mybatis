@@ -1,0 +1,44 @@
+#イメージの作成
+docker-compose build
+
+#コンテナの起動
+docker-compose up -d
+
+#コンテナの停止
+docker-compose down
+
+#プロセス削除
+docker system prune -a
+
+#コンテナ内に入る
+docker-compose exec db /bin/bash
+docker-compose exec web /bin/bash
+docker-compose exec app /bin/bash
+
+#tomcat起動確認
+docker logs -f tomcat
+
+
+#デプロイ手順
+docker-compose down
+cd demo
+gradle clean
+gradle war
+cd ../
+rm -r webapps
+mkdir webapps
+cp ./demo/build/libs/demo-0.0.1-SNAPSHOT-plain.war ./webapps
+docker-compose up -d
+
+#mysql接続確認
+docker-compose exec db /bin/bash
+mysql -h 127.0.0.1 -P 3306 -u root -p
+
+show databases;
+use sample
+source /docker-entrypoint-initdb.d/test.sql;
+show tables;
+docker logs -f tomcat
+
+http://localhost:8080/demo-0.0.1-SNAPSHOT-plain/search
+http://127.0.0.1:8080/demo-0.0.1-SNAPSHOT-plain/search
